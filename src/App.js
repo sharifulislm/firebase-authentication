@@ -1,7 +1,7 @@
 
 import './App.css';
 import app from './firebase.init';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { useState } from 'react';
 
 
@@ -16,11 +16,12 @@ const [user , setUser] =useState({});
 
 
 
-  const provider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
+  const gihubprovider = new GithubAuthProvider();
 
   const HendileClick  =() =>  {
 
-    signInWithPopup(auth,provider)
+    signInWithPopup(auth,googleProvider)
     .then ((result) => {
       const user = result.user;
       setUser(user);
@@ -30,6 +31,35 @@ const [user , setUser] =useState({});
     })
 
   }
+const HandleGihubSignIn =() => {
+
+signInWithPopup(auth, gihubprovider)
+.then(result => {
+  const user =result.user;
+  setUser(user);
+  console.log(user);
+})
+.catch(error => {
+  console.log(error);
+})
+
+}
+
+
+const handleSignOut = () => {
+
+signOut(auth)
+.then( () => {
+  setUser({});
+} )
+.catch( error => {
+  setUser({});
+})
+
+};
+
+
+
   return (
     <div className="App">
  
@@ -39,7 +69,16 @@ const [user , setUser] =useState({});
  <h4> User Email : {user.email}</h4>
  <img src={user.photoURL} alt="" />
 
-<button onClick={HendileClick}> Google sign in </button>
+{
+  user.email ?   <button onClick={handleSignOut}> SignOut </button> :
+
+  <> <button onClick={HendileClick}> Google sign in </button>
+
+  <button onClick={HandleGihubSignIn}> gitHub sign in</button> </>
+
+
+}
+
 
 
     </div>
